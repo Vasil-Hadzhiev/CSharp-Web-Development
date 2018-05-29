@@ -1,11 +1,11 @@
-﻿namespace WebServer.Server.Http.Response
+﻿namespace TestWebServer.Server.Http.Response
 {
     using Common;
     using Enums;
 
     public class RedirectResponse : HttpResponse
     {
-        protected RedirectResponse(string redirectUrl) 
+        public RedirectResponse(string redirectUrl) 
         {
             CoreValidator.ThrowIfNullOrEmpty(redirectUrl, nameof(redirectUrl));
 

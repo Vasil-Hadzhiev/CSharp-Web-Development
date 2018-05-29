@@ -1,4 +1,4 @@
-﻿namespace WebServer.Server.Http
+﻿namespace TestWebServer.Server.Http
 {
     using Common;
     using Contracts;
@@ -47,8 +47,7 @@
 
         private void ParseRequest(string requestText)
         {
-            var requestLines = requestText
-                .Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var requestLines = requestText.Split(Environment.NewLine);
 
             if (!requestLines.Any())
             {
@@ -94,7 +93,7 @@
             for (int i = 1; i < emptyLineAfterHeadersIndex; i++)
             {
                 var currentLine = requestLines[i];
-                var headerParts = currentLine.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                var headerParts = currentLine.Split(new[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (headerParts.Length != 2)
                 {
@@ -136,7 +135,7 @@
                 return;
             }
 
-            this.ParseQuery(formDataLine, this.QueryParameters);
+            this.ParseQuery(formDataLine, this.FormData);
         }
 
         private void ParseQuery(string query, IDictionary<string, string> dict)

@@ -1,4 +1,4 @@
-﻿namespace WebServer.Server.Enums
+﻿namespace TestWebServer.Server.Enums
 {
     public enum HttpStatusCode
     {

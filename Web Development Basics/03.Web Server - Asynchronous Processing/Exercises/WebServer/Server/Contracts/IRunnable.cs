@@ -1,7 +1,7 @@
 ﻿namespace TestWebServer.Server.Contracts
 {
-    public interface IView
+    public interface IRunnable
     {
-        string View();
+        void Run();
     }
 }

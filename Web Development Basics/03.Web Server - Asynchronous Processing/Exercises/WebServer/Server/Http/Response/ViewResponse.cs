@@ -1,4 +1,4 @@
-﻿namespace WebServer.Server.Http.Response
+﻿namespace TestWebServer.Server.Http.Response
 {
     using Enums;
     using Exceptions;
@@ -8,7 +8,7 @@
     {
         private readonly IView view;
 
-        protected ViewResponse(HttpStatusCode statusCode, IView view) 
+        public ViewResponse(HttpStatusCode statusCode, IView view) 
         {
             this.ValidateStatusCode(statusCode);
             this.StatusCode = statusCode;

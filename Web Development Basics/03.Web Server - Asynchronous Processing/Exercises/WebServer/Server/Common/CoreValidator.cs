@@ -1,4 +1,4 @@
-﻿namespace WebServer.Server.Common
+﻿namespace TestWebServer.Server.Common
 {
     using System;
 

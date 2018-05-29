@@ -1,4 +1,4 @@
-﻿namespace WebServer.Server.Http.Response
+﻿namespace TestWebServer.Server.Http.Response
 {
     using Contracts;
     using Enums;

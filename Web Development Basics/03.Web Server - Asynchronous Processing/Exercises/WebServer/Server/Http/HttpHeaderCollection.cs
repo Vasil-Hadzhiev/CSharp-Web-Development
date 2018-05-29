@@ -1,4 +1,4 @@
-﻿namespace WebServer.Server.Http
+﻿namespace TestWebServer.Server.Http
 {
     using Common;
     using Contracts;
