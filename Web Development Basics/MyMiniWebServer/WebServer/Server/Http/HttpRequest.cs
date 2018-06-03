@@ -132,6 +132,7 @@
             {
                 var allCookies = this.Headers.Get(HttpHeader.Cookie);
 
+                // id=15; Secure;
                 foreach (var cookie in allCookies)
                 {
                     if (!cookie.Value.Contains('='))
@@ -149,6 +150,7 @@
                         continue;
                     }
 
+                    // id=15
                     foreach (var cookiePart in cookieParts)
                     {
                         var cookieKeyValuePair = cookiePart
@@ -156,8 +158,8 @@
 
                         if (cookieKeyValuePair.Length == 2)
                         {
-                            var key = cookieKeyValuePair[0].Trim();
-                            var value = cookieKeyValuePair[1].Trim();
+                            var key = cookieKeyValuePair[0].Trim(); // id
+                            var value = cookieKeyValuePair[1].Trim(); // 15
 
                             this.Cookies.Add(new HttpCookie(key, value, false));
                         }
@@ -219,6 +221,7 @@
         {
             if (this.Cookies.ContainsKey(SessionStore.SessionCookieKey))
             {
+                //Cookie: SID=dsadaskodakosd
                 var cookie = this.Cookies.Get(SessionStore.SessionCookieKey);
                 var sessionId = cookie.Value;
 
