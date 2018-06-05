@@ -1,33 +1,57 @@
 ﻿namespace WebServer.ByTheCakeApplication.Controllers
 {
-    using Server.Enums;
+    using Infrastructure;
+    using Models;
+    using Server.Http;
     using Server.Http.Contracts;
     using Server.Http.Response;
-    using ViewModels;
-    using Views.Account;
 
-    public class AccountController
+    public class AccountController : Controller
     {
-        private const string UserLoginToken = "${0}_UserLoggedInToken_$";
-
         //GET Login
         public IHttpResponse Login()
         {
-            var result = new ViewResponse(HttpStatusCode.Ok, new LoginView());
+            this.ViewData["showError"] = "none";
+            this.ViewData["authDisplay"] = "none";
 
-            return result;
+            return this.FileViewResponse(@"account\login");
         }
 
         //POST Login
-        public IHttpResponse Login(IHttpRequest request, LoginViewModel model )
+        public IHttpResponse Login(IHttpRequest req)
         {
-            SaveUserInSession(request, model.Username);
+            const string formNameKey = "name";
+            const string formPasswordKey = "password";
+
+            if (!req.FormData.ContainsKey(formNameKey)
+                || !req.FormData.ContainsKey(formPasswordKey))
+            {
+                return new BadRequestResponse();
+            }
+
+            var name = req.FormData[formNameKey];
+            var password = req.FormData[formPasswordKey];
+
+            if (string.IsNullOrWhiteSpace(name)
+                || string.IsNullOrWhiteSpace(password))
+            {
+                this.ViewData["error"] = "You have empty fields";
+                this.ViewData["showError"] = "block";
+
+                return this.FileViewResponse(@"account\login");
+            }
+
+            req.Session.Add(SessionStore.CurrentUserKey, name);
+            req.Session.Add(ShoppingCart.SessionKey, new ShoppingCart());
+
             return new RedirectResponse("/");
         }
 
-        private static void SaveUserInSession(IHttpRequest request, string username)
+        public IHttpResponse Logout(IHttpRequest req)
         {
-            request.Session.Add(nameof(UserLoginToken), string.Format(UserLoginToken, username));
+            req.Session.Clear();
+
+            return new RedirectResponse("/login");
         }
     }
 }

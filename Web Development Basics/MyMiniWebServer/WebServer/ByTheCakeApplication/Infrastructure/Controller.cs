@@ -13,29 +13,29 @@
         public const string DefaultPath = @"ByTheCakeApplication\Resources\{0}.html";
         public const string ContentPlaceholder = "{{{content}}}";
 
-        public IHttpResponse FileViewResponse(string fileName)
+        protected Controller()
         {
-            var result = this.ProcessFileHtml(fileName);
-            var response = new ViewResponse(HttpStatusCode.Ok, new FileView(result));
-
-            return response;
+            this.ViewData = new Dictionary<string, string>
+            {
+                ["authDisplay"] = "block"
+            };
         }
 
-        public IHttpResponse FileViewResponse(string fileName, Dictionary<string, string> values)
+        protected IDictionary<string, string> ViewData { get; private set; }
+
+        protected IHttpResponse FileViewResponse(string fileName)
         {
             var result = this.ProcessFileHtml(fileName);
 
-            if (values != null && values.Any())
+            if (this.ViewData.Any())
             {
-                foreach (var value in values)
+                foreach (var value in this.ViewData)
                 {
                     result = result.Replace($"{{{{{{{value.Key}}}}}}}", value.Value);
                 }
             }
 
-            var response = new ViewResponse(HttpStatusCode.Ok, new FileView(result));
-
-            return response;
+            return new ViewResponse(HttpStatusCode.Ok, new FileView(result));
         }
 
         private string ProcessFileHtml(string fileName)

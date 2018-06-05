@@ -20,7 +20,6 @@
             this.requestText = requestText;
 
             this.FormData = new Dictionary<string, string>();
-            this.QueryParameters = new Dictionary<string, string>();
             this.UrlParameters = new Dictionary<string, string>();
             this.Headers = new HttpHeaderCollection();
             this.Cookies = new HttpCookieCollection();
@@ -35,8 +34,6 @@
         public IHttpCookieCollection Cookies { get; private set; }
 
         public string Path { get; private set; }
-
-        public IDictionary<string, string> QueryParameters { get; private set; }
 
         public HttpRequestMethod Method { get; private set; }
 

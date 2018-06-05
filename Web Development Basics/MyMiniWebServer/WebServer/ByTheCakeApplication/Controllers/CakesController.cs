@@ -1,21 +1,27 @@
 ﻿namespace WebServer.ByTheCakeApplication.Controllers
 {
+    using Data;
     using Infrastructure;
     using Models;
     using Server.Http.Contracts;
     using System;
-    using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
 
     public class CakesController : Controller
     {
-        private static readonly List<Cake> cakes = new List<Cake>();
+        private readonly CakesData cakesData;
 
-        public IHttpResponse Add() => this.FileViewResponse(@"cakes\add", new Dictionary<string, string>()
+        public CakesController()
         {
-            ["showResult"] = "none"
-        });
+            this.cakesData = new CakesData();
+        }
+
+        public IHttpResponse Add()
+        {
+            this.ViewData["showResult"] = "none";
+
+            return this.FileViewResponse(@"cakes\add");
+        }
 
         public IHttpResponse Add(string name, string price)
         {
@@ -25,52 +31,63 @@
                 Price = decimal.Parse(price)
             };
 
-            cakes.Add(cake);
+            this.cakesData.Add(name, price);
 
-            using (var streamWriter = new StreamWriter(@"ByTheCakeApplication\Data\database.csv", true))
-            {
-                streamWriter.WriteLine($"{name},{price}");
-            }
+            this.ViewData["name"] = name;
+            this.ViewData["price"] = price;
+            this.ViewData["showResult"] = "block";
 
-            return this.FileViewResponse(@"cakes\add", new Dictionary<string, string>
-            {
-                ["name"] = name,
-                ["price"] = price,
-                ["showResult"] = "block"
-            });
+            return this.FileViewResponse(@"cakes\add");
         }
 
-        public IHttpResponse Search(IDictionary<string, string> urlParameters)
+        public IHttpResponse Search(IHttpRequest req)
         {
             const string searchTermKey = "searchTerm";
 
-            var results = string.Empty;
+            var urlParameters = req.UrlParameters;
+
+            this.ViewData["results"] = string.Empty;
+            this.ViewData["searchTerm"] = string.Empty;
 
             if (urlParameters.ContainsKey(searchTermKey))
             {
                 var searchTerm = urlParameters[searchTermKey];
 
-                var savedCakesDivs = File
-                    .ReadAllLines(@"ByTheCakeApplication\Data\database.csv")
-                    .Where(l => l.Contains(','))
-                    .Select(l => l.Split(","))
-                    .Select(l => new Cake
-                    {
-                        Name = l[0],
-                        Price = decimal.Parse(l[1])
-                    })
-                    .Where(c => c.Name.ToLower().Contains(searchTerm.ToLower()))
-                    .Select(c => $"<div>{c.Name} - ${c.Price}</div>");
+                this.ViewData["searchTerm"] = searchTerm;
 
-                results = string.Join(Environment.NewLine, savedCakesDivs);
+                var savedCakesDivs = this.cakesData
+                    .All()
+                    .Where(c => c.Name.ToLower().Contains(searchTerm.ToLower()))
+                    .Select(c => $@"<div>{c.Name} - ${c.Price:F2} <a href=""/shopping/add/{c.Id}?searchTerm={searchTerm}"">Order</a></div>");
+
+                var results = "No cakes found";
+
+                if (savedCakesDivs.Any())
+                {
+                    results = string.Join(Environment.NewLine, savedCakesDivs);
+                }
+
+                this.ViewData["results"] = results;
+            }
+            else
+            {
+                this.ViewData["results"] = "Please, enter search term";
             }
 
-            var response = this.FileViewResponse(@"cakes\search", new Dictionary<string, string>
-            {
-                ["results"] = results
-            });
+            this.ViewData["showCart"] = "none";
 
-            return response;
+            var shoppingCart = req.Session.Get<ShoppingCart>(ShoppingCart.SessionKey);
+
+            if (shoppingCart.Orders.Any())
+            {
+                var totalProducts = shoppingCart.Orders.Count;
+                var totalProductsText = totalProducts != 1 ? "products" : "product";
+
+                this.ViewData["showCart"] = "block";
+                this.ViewData["products"] = $"{totalProducts} {totalProductsText}";
+            }
+
+            return this.FileViewResponse(@"cakes\search");
         }
     }
 }

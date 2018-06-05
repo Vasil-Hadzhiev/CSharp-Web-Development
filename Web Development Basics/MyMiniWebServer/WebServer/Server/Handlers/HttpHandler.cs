@@ -5,6 +5,7 @@
     using Http.Contracts;
     using Http.Response;
     using Routing.Contracts;
+    using Server.Http;
     using System.Text.RegularExpressions;
 
     public class HttpHandler : IRequestHandler
@@ -20,6 +21,16 @@
 
         public IHttpResponse Handle(IHttpContext context)
         {
+            // Check if user is authenticated
+            var loginPath = "/login";
+
+            if (context.Request.Path != loginPath &&
+                (context.Request.Session == null ||
+                !context.Request.Session.Contains(SessionStore.CurrentUserKey)))
+            {
+                return new RedirectResponse(loginPath);
+            }
+
             var requestMethod = context.Request.Method;
             var requestPath = context.Request.Path;
             var registeredRoutes = this.serverRouteConfig.Routes[requestMethod];
