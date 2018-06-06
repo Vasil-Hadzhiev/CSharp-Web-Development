@@ -1,11 +1,23 @@
 ﻿namespace WebServer.ByTheCakeApplication
 {
     using Controllers;
+    using Data;
+    using Microsoft.EntityFrameworkCore;
     using Server.Contracts;
     using Server.Routing.Contracts;
+    using ViewModels.Account;
+    using ViewModels.Products;
 
     public class ByTheCakeApp : IApplication
     {
+        public void InitializeDatabse()
+        {
+            using (var db = new ByTheCakeContext())
+            {
+                db.Database.Migrate();
+            }
+        }
+
         public void Configure(IAppRouteConfig appRouteConfig)
         {
             appRouteConfig
@@ -21,17 +33,45 @@
             appRouteConfig
                 .Get(
                     "/add", 
-                    req => new CakesController().Add());
+                    req => new ProductsController().Add());
 
             appRouteConfig
                 .Post(
                     "/add",
-                    req => new CakesController().Add(req.FormData["name"], req.FormData["price"]));
+                    req => new ProductsController().Add(new AddProductViewModel
+                    {
+                        Name = req.FormData["name"],
+                        Price = decimal.Parse(req.FormData["price"]),
+                        ImageUrl = req.FormData["imageUrl"]
+                    }));
 
             appRouteConfig
                 .Get(
                     "/search",
-                    req => new CakesController().Search(req));
+                    req => new ProductsController().Search(req));
+
+            appRouteConfig
+                .Get(
+                    "/cakes/{(?<id>[0-9]+)}",
+                    req => new ProductsController()
+                        .Details(int.Parse(req.UrlParameters["id"])));
+
+            appRouteConfig
+                .Get(
+                    "/register",
+                    req => new AccountController().Register());
+
+            appRouteConfig
+                .Post(
+                    "/register",
+                    req => new AccountController().Register(
+                        req, 
+                        new RegisterUserViewModel
+                        {
+                            Username = req.FormData["username"],
+                            Password = req.FormData["password"],
+                            ConfirmPassword = req.FormData["confirm-password"]
+                        }));
 
             appRouteConfig
                 .Get(
@@ -41,7 +81,16 @@
             appRouteConfig
                 .Post(
                     "/login",
-                    req => new AccountController().Login(req));
+                    req => new AccountController().Login(req, new LoginViewModel
+                    {
+                        Username = req.FormData["username"],
+                        Password = req.FormData["password"]
+                    }));
+
+            appRouteConfig
+                .Get(
+                    "/profile",
+                    req => new AccountController().Profile(req));
 
             appRouteConfig
                 .Post(
@@ -62,6 +111,17 @@
                 .Post(
                     "/shopping/finish-order",
                     req => new ShoppingController().FinishOrder(req));
+
+            appRouteConfig
+                .Get(
+                    "/orders",
+                    req => new ShoppingController().MyOrders(req));
+
+            appRouteConfig.
+                Get(
+                    "/orders/{(?<id>[0-9]+)}",
+                    req => new ShoppingController()
+                        .OrderDetails(int.Parse(req.UrlParameters["id"])));
         }
     }
 }
