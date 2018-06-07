@@ -14,5 +14,7 @@
         bool Exists(int id);
 
         IEnumerable<ProductInCartViewModel> FindProductsInCart(IEnumerable<int> ids);
+
+        IEnumerable<ProductListingViewModel> GetProductsForOrder(int id);
     }
 }

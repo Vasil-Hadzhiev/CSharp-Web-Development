@@ -6,6 +6,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using ViewModels.Orders;
+    using WebServer.ByTheCakeApplication.ViewModels.Products;
 
     public class ShoppingService : IShoppingService
     {
@@ -39,27 +40,6 @@
 
                 return order;
             }
-        }
-
-        //TODO: Get products for the given order
-        public IEnumerable<OrderDetailView> GetProducts(int id)
-        {
-            using (var db = new ByTheCakeContext())
-            {
-                var orderProduct = db
-                    .OrderProduct
-                    .Where(op => op.OrderId == id);
-
-                var products = orderProduct
-                    .Select(op => new OrderDetailView
-                    {
-                        Name = op.Product.Name,
-                        Price = op.Product.Price
-                    })
-                    .ToList();
-
-                return products;
-            }
-        }
+        }      
     }
 }

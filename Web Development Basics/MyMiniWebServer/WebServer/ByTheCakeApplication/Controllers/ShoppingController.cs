@@ -99,8 +99,6 @@
             return this.FileViewResponse(@"shopping\finish-order");
         }
 
-
-        //TODO: Maybe create new controller for orders
         public IHttpResponse MyOrders(IHttpRequest req)
         {
             var username = req.Session.Get<string>(SessionStore.CurrentUserKey);
@@ -132,7 +130,14 @@
 
             this.ViewData["orderDate"] = order.CreationDate.ToShortDateString();
 
-            var products = this.shopping.GetProducts(id);
+            var products = this.products.GetProductsForOrder(id);
+
+            var resultProducts = products
+                .Select(p => $@"<tr><td><a href=""/cakes/{p.Id}"">{p.Name}</a></td><td>${p.Price}</td></tr>");
+
+            var allProductsAsString = string.Join(Environment.NewLine, resultProducts);
+
+            this.ViewData["products"] = allProductsAsString;
 
             return this.FileViewResponse(@"orders\orderDetails");
         }

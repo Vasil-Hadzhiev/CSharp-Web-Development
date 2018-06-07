@@ -74,7 +74,6 @@
             }
         }
 
-        //TODO: Maybe create new service for orders
         public IEnumerable<OrderListingViewModel> Orders(string username)
         {
             using (var db = new ByTheCakeContext())

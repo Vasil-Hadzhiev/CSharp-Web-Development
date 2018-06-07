@@ -86,5 +86,25 @@
                     .ToList();
             }
         }
+
+        public IEnumerable<ProductListingViewModel> GetProductsForOrder(int id)
+        {
+            using (var db = new ByTheCakeContext())
+            {
+                var order = db.OrderProduct
+                    .Where(op => op.OrderId == id);
+
+                var products = order
+                    .Select(op => new ProductListingViewModel()
+                    {
+                        Id = op.ProductId,
+                        Name = op.Product.Name,
+                        Price = op.Product.Price
+                    })
+                    .ToList();
+
+                return products;
+            }
+        }
     }
 }
