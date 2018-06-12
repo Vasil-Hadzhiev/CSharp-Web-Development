@@ -10,7 +10,7 @@
 
     public class ByTheCakeApp : IApplication
     {
-        public void InitializeDatabse()
+        public void InitializeDatabase()
         {
             using (var db = new ByTheCakeContext())
             {
@@ -20,6 +20,9 @@
 
         public void Configure(IAppRouteConfig appRouteConfig)
         {
+            appRouteConfig.AnonymousPaths.Add("/register");
+            appRouteConfig.AnonymousPaths.Add("/login");
+
             appRouteConfig
                 .Get(
                     "/", 

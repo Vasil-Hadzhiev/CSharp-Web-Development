@@ -9,7 +9,7 @@
     using ViewModels;
     using ViewModels.Account;
 
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly IUserService users;
 
@@ -39,7 +39,7 @@
                 || password.Length < 3
                 || confirmPassword != password)
             {
-                this.AddError("Invalid user details");
+                this.ShowError("Invalid user details");
 
                 return this.FileViewResponse(@"account\register");
             }
@@ -55,7 +55,7 @@
             }
             else
             {
-                this.AddError("This username is taken");
+                this.ShowError("This username is taken");
 
                 return this.FileViewResponse(@"account\register");
             }
@@ -77,7 +77,7 @@
             if (string.IsNullOrWhiteSpace(username)
                 || string.IsNullOrWhiteSpace(password))
             {
-                this.AddError("You have empty fields");
+                this.ShowError("You have empty fields");
 
                 return this.FileViewResponse(@"account\login");
             }
@@ -92,7 +92,7 @@
             }
             else
             {
-                this.AddError("Invalid user details");
+                this.ShowError("Invalid user details");
 
                 return this.FileViewResponse(@"account\login");
             }

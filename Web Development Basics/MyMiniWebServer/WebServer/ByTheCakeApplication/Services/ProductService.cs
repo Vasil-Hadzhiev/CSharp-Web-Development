@@ -7,7 +7,7 @@
     using System.Linq;
     using ViewModels.Products;
 
-    class ProductService : IProductService
+    public class ProductService : IProductService
     {
         public void Create(string name, decimal price, string imageUrl)
         {

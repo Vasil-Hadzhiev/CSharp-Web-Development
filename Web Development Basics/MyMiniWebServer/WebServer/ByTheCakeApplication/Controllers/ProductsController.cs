@@ -9,7 +9,7 @@
     using ViewModels;
     using ViewModels.Products;
 
-    public class ProductsController : Controller
+    public class ProductsController : BaseController
     {
         private readonly IProductService products;
 
@@ -36,7 +36,7 @@
                || imageUrl.Length < 3
                || imageUrl.Length > 2000)
             {
-                this.AddError("Product information is not valid");
+                this.ShowError("Product information is not valid");
 
                 return this.FileViewResponse(@"products\add");
             }
