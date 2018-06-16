@@ -12,7 +12,7 @@
         {
             var builder = new StringBuilder();
 
-            builder.AppendLine(@"<a href=""/user/all"">Back to All Users</a>");
+            builder.AppendLine(@"<a href=""/user/all"">< All Users</a>");
             builder.AppendLine($"<h3>User: {Model.Username}</h3>");
             builder.AppendLine(@"<form action=""profile"" method=""post""");
             builder.AppendLine(@"<label for=""Title"">Title:</label>");

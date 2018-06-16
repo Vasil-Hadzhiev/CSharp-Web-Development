@@ -9,6 +9,7 @@
         {
             var sb = new StringBuilder();
 
+            sb.AppendLine(@"<a href=""/home/index"">< Home</a>");
             sb.AppendLine("<h3>Register new user</h3>");
             sb.AppendLine("<form action=\"register\" method=\"POST\"><br />");
             sb.AppendLine("Username: <input type=\"text\" name=\"Username\"/><br />");

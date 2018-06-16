@@ -13,7 +13,7 @@
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine(@"<a href=""/home/index"">Back to Home</a>");
+            sb.AppendLine(@"<a href=""/home/index"">< Home</a>");
             sb.AppendLine("<h3>All users</h3>");
             sb.AppendLine("<ul>");
 
