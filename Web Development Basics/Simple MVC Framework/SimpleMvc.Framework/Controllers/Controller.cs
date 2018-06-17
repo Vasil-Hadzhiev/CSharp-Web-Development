@@ -1,55 +1,101 @@
 ﻿namespace SimpleMvc.Framework.Controllers
 {
-    using Interfaces;
-    using Interfaces.Generic;
+    using ActionResults;
+    using Attributes.Property;
+    using Contracts;
+    using Models;
+    using Security;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
-    using ViewEngine;
-    using ViewEngine.Generic;
+    using Views;
+    using WebServer.Http;
+    using WebServer.Http.Contracts;
 
-    public abstract class Controller 
+    public abstract class Controller
     {
-        protected IActionResult View([CallerMemberName] string caller = "")
+        protected Controller()
         {
-            string controllerName = this.GetControllerName();
-
-            var fullQualifiedName = this.GetFullQualifiedName(controllerName, caller);
-
-            return new ActionResult(fullQualifiedName);
+            this.Model = new ViewModel();
+            this.User = new Authentication();
         }
 
-        protected IActionResult View(string controller, string action)
-        {
-            var fullQualifiedName = this.GetFullQualifiedName(controller, action);
+        protected ViewModel Model { get; }
 
-            return new ActionResult(fullQualifiedName);
+        protected internal IHttpRequest Request { get; internal set; }
+
+        protected internal Authentication User { get; private set; }
+
+        protected IViewable View([CallerMemberName] string caller = "")
+        {
+            var controllerName = this.GetType()
+                    .Name
+                    .Replace(MvcContext.Get.ControllersSuffix, string.Empty);
+
+            var fullQualifiedName = string.Format("{0}\\{1}\\{2}",
+                    MvcContext.Get.ViewsFolder,
+                    controllerName,
+                    caller);
+
+            IRenderable view = new View(fullQualifiedName, this.Model.Data);
+
+            return new ViewResult(view);
         }
 
-        protected IActionResult<TModel> View<TModel>(TModel model, [CallerMemberName] string caller = "")
+        protected IRedirectable RedirectToAction(string redirectUrl)
         {
-            var controllerName = this.GetControllerName();
-
-            var fullQualifiedName = this.GetFullQualifiedName(controllerName, caller);
-
-            return new ActionResult<TModel>(fullQualifiedName, model);
+            return new RedirectResult(redirectUrl);
         }
 
-        protected IActionResult<TModel> View<TModel>(TModel model, string controller, string action)
+        protected bool IsValid(object model)
         {
-            var fullQualifiedName = this.GetFullQualifiedName(controller, action);
+            var modelProperties = model.GetType().GetProperties();
 
-            return new ActionResult<TModel>(fullQualifiedName, model);
+            foreach (PropertyInfo property in modelProperties)
+            {
+                IEnumerable<Attribute> attributes = property
+                    .GetCustomAttributes()
+                    .Where(a => a is PropertyAttribute);
+
+                if (!attributes.Any())
+                {
+                    continue;
+                }
+
+                foreach (PropertyAttribute attribute in attributes)
+                {
+                    if (!attribute.IsValid(property.GetValue(model)))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
-        private string GetControllerName()
-            => this.GetType()
-                .Name
-                .Replace(MvcContext.Get.ControllersSuffix, string.Empty);
+        protected internal void InitializeController()
+        {
+            var user = this.Request
+                .Session
+                .Get<string>(SessionStore.CurrentUserKey);
 
-        private string GetFullQualifiedName(string controllerName, string action)
-            => string.Format("{0}.{1}.{2}.{3}, {0}",
-                MvcContext.Get.AssemblyName,
-                MvcContext.Get.ViewsFolder,
-                controllerName,
-                action);
+            if (user != null)
+            {
+                this.User = new Authentication(user);
+            }
+        }
+
+        protected void SignIn(string name)
+        {
+            this.Request.Session.Add(SessionStore.CurrentUserKey, name);
+        }
+
+        protected void SignOut()
+        {
+            this.Request.Session.Clear();
+        }
     }
 }

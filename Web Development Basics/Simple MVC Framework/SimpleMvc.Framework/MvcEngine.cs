@@ -30,6 +30,7 @@
             context.ControllersSuffix = "Controller";
             context.ViewsFolder = "Views";
             context.ModelsFolder = "Models";
+            context.ResourcesFolder = "Resources";
         }
     }
 }

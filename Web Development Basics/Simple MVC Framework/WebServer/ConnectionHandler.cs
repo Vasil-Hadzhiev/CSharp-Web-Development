@@ -1,27 +1,33 @@
 ﻿namespace WebServer
 {
     using Common;
+    using Contracts;
     using Http;
     using Http.Contracts;
+    using Http.Response;
     using System;
+    using System.Linq;
     using System.Net.Sockets;
     using System.Text;
     using System.Threading.Tasks;
-    using Contracts;
 
     public class ConnectionHandler
     {
         private readonly Socket client;
 
-        private readonly IHandleable mvcRequestHandler;
+        private readonly IHandleable requestHandler;
 
-        public ConnectionHandler(Socket client, IHandleable mvcRequestHandler)
+        private readonly IHandleable resourceHandler;
+
+        public ConnectionHandler(Socket client, IHandleable requestHandler, IHandleable resourceHandler)
         {
             CoreValidator.ThrowIfNull(client, nameof(client));
-            CoreValidator.ThrowIfNull(mvcRequestHandler, nameof(mvcRequestHandler));
+            CoreValidator.ThrowIfNull(requestHandler, nameof(requestHandler));
+            CoreValidator.ThrowIfNull(resourceHandler, nameof(resourceHandler));
 
             this.client = client;
-            this.mvcRequestHandler = mvcRequestHandler;
+            this.requestHandler = requestHandler;
+            this.resourceHandler = resourceHandler;
         }
 
         public async Task ProcessRequestAsync()
@@ -30,9 +36,9 @@
 
             if (httpRequest != null)
             {
-                var httpResponse = this.mvcRequestHandler.Handle(httpRequest);
+                var httpResponse = await this.HandleRequest(httpRequest);
 
-                var responseBytes = Encoding.UTF8.GetBytes(httpResponse.ToString());
+                var responseBytes = await this.GetResponseBytes(httpResponse);
 
                 var byteSegments = new ArraySegment<byte>(responseBytes);
 
@@ -79,6 +85,60 @@
             }
             
             return new HttpRequest(result.ToString());
+        }
+
+        private async Task<IHttpResponse> HandleRequest(IHttpRequest request)
+        {
+            if (request.Path.Contains("."))
+            {
+                return this.resourceHandler.Handle(request);
+            }
+            else 
+            {
+                var sessionIdToSend = this.SetRequestSession(request);
+
+                var response = this.requestHandler.Handle(request);
+
+                this.SetResponseSession(response, sessionIdToSend);
+
+                return response;
+            }
+        }
+
+        private string SetRequestSession(IHttpRequest request)
+        {
+            if (!request.Cookies.ContainsKey(SessionStore.SessionCookieKey))
+            {
+                var sessionId = Guid.NewGuid().ToString();
+
+                request.Session = SessionStore.Get(sessionId);
+
+                return sessionId;
+            }
+
+            return null;
+        }
+
+        private void SetResponseSession(IHttpResponse response, string sessionIdToSend)
+        {
+            if (sessionIdToSend != null)
+            {
+                response.Headers.Add(
+                    HttpHeader.SetCookie,
+                    $"{SessionStore.SessionCookieKey}={sessionIdToSend}; HttpOnly; path=/");
+            }
+        }
+
+        private async Task<byte[]> GetResponseBytes(IHttpResponse response)
+        {
+            var responseBytes = Encoding.UTF8.GetBytes(response.ToString()).ToList();
+
+            if (response is FileResponse)
+            {
+                responseBytes.AddRange(((FileResponse)response).FileData);
+            }
+
+            return responseBytes.ToArray();
         }
     }
 }

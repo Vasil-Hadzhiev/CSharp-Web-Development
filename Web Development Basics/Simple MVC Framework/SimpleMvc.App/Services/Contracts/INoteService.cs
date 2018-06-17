@@ -1,4 +1,4 @@
-﻿namespace SimpleMvc.App.Services.Interfaces
+﻿namespace SimpleMvc.App.Services.Contracts
 {
     public interface INoteService
     {

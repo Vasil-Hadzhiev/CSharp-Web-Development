@@ -15,7 +15,7 @@
                 db.Database.Migrate();
             }
 
-            var server = new WebServer(8000, new ControllerRouter());
+            var server = new WebServer(8000, new ControllerRouter(), new ResourceRouter());
 
             MvcEngine.Run(server);
         }

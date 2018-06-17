@@ -1,7 +1,7 @@
 ﻿namespace SimpleMvc.App.Services
 {
+    using Contracts;
     using Data;
-    using Interfaces;
     using SimpleMvc.Models;
     using System.Linq;
 
