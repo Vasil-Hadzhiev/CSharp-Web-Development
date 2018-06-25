@@ -28,8 +28,15 @@
 
         protected internal Authentication User { get; private set; }
 
+        private void IntializeViewModelData()
+        {
+            this.Model["displayType"] = this.User.IsAuthenticated ? "block" : "none";
+        }
+
         protected IViewable View([CallerMemberName] string caller = "")
         {
+            this.IntializeViewModelData();
+
             var controllerName = this.GetType()
                     .Name
                     .Replace(MvcContext.Get.ControllersSuffix, string.Empty);
