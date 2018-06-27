@@ -85,5 +85,12 @@
 
             return this.RedirectToHome();
         }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            this.SignOut();
+            return this.RedirectToHome();
+        }
     }
 }

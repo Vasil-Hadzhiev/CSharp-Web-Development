@@ -34,7 +34,7 @@
         {
             this.Model.Data["anonymousDisplay"] = "block";
             this.Model.Data["authDisplay"] = "none";
-            this.Model.Data["show-error"] = "none";
+            this.Model.Data["show-error"] = "none";            
         }
 
         protected IActionResult RedirectToHome() => this.RedirectToAction("/home/index");
