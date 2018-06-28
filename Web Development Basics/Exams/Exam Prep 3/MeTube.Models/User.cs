@@ -1,0 +1,29 @@
+﻿namespace MeTube.Models
+{
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
+    public class User
+    {
+        public User()
+        {
+            this.Tubes = new List<Tube>();
+        }
+
+        public int Id { get; set; }
+
+        [Required]
+        [MinLength(2)]
+        [MaxLength(50)]
+        public string Username { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        public IList<Tube> Tubes { get; set; }
+    }
+}
