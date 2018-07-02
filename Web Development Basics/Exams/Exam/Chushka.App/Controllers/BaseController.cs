@@ -59,6 +59,8 @@
 
         protected ChushkaContext Context { get; set; }
 
+        protected bool IsAdmin => this.User.IsAuthenticated && this.User.Roles.First() == "Admin";
+
         protected IActionResult RedirectToHome() => this.RedirectToAction("/home/index");
 
         protected void ShowError(string errorMsg)

@@ -13,12 +13,7 @@
         [HttpGet]
         public IActionResult Create()
         {
-            if (!this.User.IsAuthenticated)
-            {
-                return this.RedirectToHome();
-            }
-
-            if (this.User.Roles.First() != "Admin")
+            if (!this.IsAdmin)
             {
                 return this.RedirectToHome();
             }
@@ -42,12 +37,7 @@
         [HttpPost]
         public IActionResult Create(ProductBindingModel model)
         {
-            if (!this.User.IsAuthenticated)
-            {
-                return this.RedirectToHome();
-            }
-
-            if (this.User.Roles.First() != "Admin")
+            if (!this.IsAdmin)
             {
                 return this.RedirectToHome();
             }
@@ -123,12 +113,7 @@
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            if (!this.User.IsAuthenticated)
-            {
-                return this.RedirectToHome();
-            }
-
-            if (this.User.Roles.First() != "Admin")
+            if (!this.IsAdmin)
             {
                 return this.RedirectToHome();
             }
@@ -172,12 +157,7 @@
         [HttpPost]
         public IActionResult Edit(int id, ProductBindingModel model)
         {
-            if (!this.User.IsAuthenticated)
-            {
-                return this.RedirectToHome();
-            }
-
-            if (this.User.Roles.First() != "Admin")
+            if (!this.IsAdmin)
             {
                 return this.RedirectToHome();
             }
@@ -212,12 +192,7 @@
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            if (!this.User.IsAuthenticated)
-            {
-                return this.RedirectToHome();
-            }
-
-            if (this.User.Roles.First() != "Admin")
+            if (!this.IsAdmin)
             {
                 return this.RedirectToHome();
             }
@@ -263,12 +238,7 @@
         [HttpPost]
         public IActionResult Confirm(int id)
         {
-            if (!this.User.IsAuthenticated)
-            {
-                return this.RedirectToHome();
-            }
-
-            if (this.User.Roles.First() != "Admin")
+            if (!this.IsAdmin)
             {
                 return this.RedirectToHome();
             }

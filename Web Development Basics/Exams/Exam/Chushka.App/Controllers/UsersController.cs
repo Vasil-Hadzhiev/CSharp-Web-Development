@@ -39,6 +39,12 @@
             var fullName = model.FullName;
             var email = model.Email;
 
+            if (this.Context.Users.FirstOrDefault(u => u.Username == username) != null)
+            {
+                this.ShowError("User already exists.");
+                return this.View();
+            }
+
             var user = new User
             {
                 Username = username,

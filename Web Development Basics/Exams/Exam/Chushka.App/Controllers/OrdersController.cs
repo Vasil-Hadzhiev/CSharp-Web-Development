@@ -10,12 +10,7 @@
         [HttpGet]
         public IActionResult All()
         {
-            if (!this.User.IsAuthenticated)
-            {
-                return this.RedirectToHome();
-            }
-
-            if (this.User.Roles.First() != "Admin")
+            if (!this.IsAdmin)
             {
                 return this.RedirectToHome();
             }
