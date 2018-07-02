@@ -161,7 +161,7 @@
                     result.Append($@"<td>");
                     result.Append($@"<a class=""btn btn-warning btn-sm"" href=""/admin/edit?id={post.Id}"">Edit</a>");
                     result.Append(" ");
-                    result.Append($@"<a class=""btn btn-danger btn-sm"" href=""/admin/delete?id={post.Id}"">Delete</a>");
+                    result.Append($@"<a class=""btn btn-danger btn-sm"" href=""/admin/delete/{post.Id}"">Delete</a>");
                     result.Append($@"</td>");
                     result.Append("</tr>");
                 }
