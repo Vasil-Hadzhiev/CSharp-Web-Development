@@ -11,6 +11,10 @@
 
         public DbSet<Borrower> Borrowers { get; set; }
 
+        public DbSet<BookRecord> BookRecords { get; set; }
+
+        public DbSet<BorrowersBooks> BorrowersBooks { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             if (!builder.IsConfigured)
@@ -24,18 +28,26 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Book>()
+            builder
+                .Entity<Book>()
                 .HasMany(book => book.Borrowers)
                 .WithOne(borrower => borrower.Book)
                 .HasForeignKey(bb => bb.BookId);
 
-            builder.Entity<Borrower>()
+            builder
+                .Entity<Borrower>()
                 .HasMany(borrower => borrower.BorrowedBooks)
                 .WithOne(book => book.Borrower)
                 .HasForeignKey(bb => bb.BorrowerId);
 
-            builder.Entity<BorrowersBooks>()
+            builder
+                .Entity<BorrowersBooks>()
                 .HasKey(bb => new { bb.BookId, bb.BorrowerId });
+
+            builder
+                .Entity<Book>()
+                .Property(b => b.Status)
+                .HasDefaultValue("At home");
 
             base.OnModelCreating(builder);
         }

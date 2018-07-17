@@ -28,7 +28,8 @@
                     BookId = b.Id,
                     Title = b.Title,
                     AuthorId = b.AuthorId,
-                    Author = b.Author.Name
+                    Author = b.Author.Name,
+                    Status = b.Status
                 })
                 .ToList();
         }

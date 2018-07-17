@@ -4,14 +4,16 @@ using BookLibrary.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookLibrary.Data.Migrations
 {
     [DbContext(typeof(BookLibraryContext))]
-    partial class BookLibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20180717140710_BookRecordsTable")]
+    partial class BookRecordsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,9 +46,7 @@ namespace BookLibrary.Data.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue("At home");
+                    b.Property<string>("Status");
 
                     b.Property<string>("Title");
 
@@ -73,7 +73,7 @@ namespace BookLibrary.Data.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Records");
+                    b.ToTable("BookRecords");
                 });
 
             modelBuilder.Entity("BookLibrary.Models.Borrower", b =>

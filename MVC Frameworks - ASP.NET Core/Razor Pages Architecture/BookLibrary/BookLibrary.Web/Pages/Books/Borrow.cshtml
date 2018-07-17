@@ -1,0 +1,30 @@
+﻿@page "{id}"
+@model BookLibrary.Web.Pages.Books.BorrowModel
+@{
+    ViewData["Title"] = "Borrow";
+}
+
+<h2>Borrow book</h2>
+
+<form method="post">
+    <div class="form-group">
+        <div class="alert-danger" asp-validation-summary="All"></div>
+        <label asp-for="@Model.Borrower"></label>
+        <select class="custom-select form-control" asp-for="@Model.Borrower">
+            <option selected>Select Borrower</option>
+            @foreach (var name in Model.Borrowers)
+            {
+                <option value="@name">@name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.StartDate"></label>
+        <input type="date" asp-for="@Model.StartDate" class="form-control" placeholder="Start Date" />
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.EndDate"></label>
+        <input type="date" asp-for="@Model.EndDate" class="form-control" placeholder="End Date (Optional)" />
+    </div>
+    <button asp-page-handler="Borrow" type="submit" class="btn btn-success">Borrow Book</button>
+</form>

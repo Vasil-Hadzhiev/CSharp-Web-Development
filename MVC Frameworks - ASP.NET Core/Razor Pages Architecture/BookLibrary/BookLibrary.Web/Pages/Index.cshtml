@@ -29,7 +29,14 @@
                         @book.Author
                     </a>
                 </td>
-                <td>TO DO</td>
+                @if (book.Status == "At home")
+                {
+                    <td>@book.Status</td>
+                }
+                else
+                {
+                    <td class="table-warning">@book.Status</td>
+                }
             </tr>
         }
     </tbody>

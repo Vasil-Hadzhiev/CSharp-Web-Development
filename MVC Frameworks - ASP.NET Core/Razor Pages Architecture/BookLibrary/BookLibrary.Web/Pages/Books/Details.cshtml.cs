@@ -22,6 +22,8 @@
 
         public string Description { get; set; }
 
+        public string Status { get; set; }
+
         public IActionResult OnGet(int id)
         {
             var book = this.Context
@@ -40,8 +42,41 @@
                 .Authors
                 .FirstOrDefault(a => a.Id == book.AuthorId)
                 .Name;
+            this.Status = book.Status;
 
             return this.Page();
+        }
+
+        public IActionResult OnPostBorrowBook(int id)
+        {
+            return this.RedirectToPage("/Books/Borrow", new { id = id });
+        }
+
+        public IActionResult OnPostReturnBook(int id)
+        {
+            var book = this.Context
+                .Books
+                .FirstOrDefault(b => b.Id == id);
+
+            var bookId = book.Id;
+
+            foreach (var item in this.Context.BorrowersBooks)
+            {
+                if (item.BookId == id)
+                {
+                    this.Context.BorrowersBooks.Remove(item);
+                }
+            }
+
+            book.Status = "At home";
+            this.Context.SaveChanges();
+
+            return this.RedirectToPage("/Index");
+        }
+
+        public IActionResult OnPostBookStatus(int id)
+        {
+            return this.RedirectToPage("/Books/Status", new { id = id });
         }
     }
 }

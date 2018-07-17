@@ -13,7 +13,24 @@
             <h2>@Model.Title</h2>
             <h5>by @Model.Author</h5>
             <p>@Model.Description</p>
+            @if (Model.Status == "At home")
+            {
+                <p class="text-success"><strong class="text-dark">Status:</strong> @Model.Status</p>
+                <form method="post">
+                    <input asp-page-handler="BorrowBook" type="submit" class="btn btn-success" value="Borrow">
+                </form>
+            }
+            else
+            {
+                <p class="text-warning"><strong class="text-dark">Status:</strong> @Model.Status</p>
+                <form method="post">
+                    <input asp-page-handler="ReturnBook" type="submit" class="btn btn-success" value="Return">
+                </form>
+            }
+            <br />
+            <form method="post">
+                <input asp-page-handler="BookStatus" type="submit" class="btn btn-primary" value="Show History">
+            </form>
         </div>
     </div>
 </div>
-

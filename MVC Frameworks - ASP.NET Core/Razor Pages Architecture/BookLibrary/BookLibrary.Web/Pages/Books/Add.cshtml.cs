@@ -34,7 +34,7 @@
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                return this.Page();
             }
 
             var author = GetOrCreateAuthor();
