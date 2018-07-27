@@ -1,0 +1,17 @@
+﻿@model DirectorsDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>@Model.Director</h2>
+<ul>
+    @foreach (var movie in Model.Movies)
+    {
+        <li>
+            <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.MovieId">
+                @movie.Title
+            </a>
+        </li>
+    }
+</ul>

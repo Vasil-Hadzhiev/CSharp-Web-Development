@@ -1,0 +1,34 @@
+﻿@page "{id}"
+@model Library.Web.Pages.Books.DetailsModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <img src="@Model.BookDetails.CoverImg" alt="Cover image for @Model.BookDetails.Title" />
+        </div>
+        <div class="col-md-7">
+            <h2>@Model.BookDetails.Title</h2>
+            <h5>by @Model.BookDetails.Author</h5>
+            <p>@Model.BookDetails.Description</p>
+            @if (Model.BookDetails.Status == "At home")
+            {
+                <p class="text-success"><strong class="text-dark">Status:</strong> @Model.BookDetails.Status</p>
+                <form method="post">
+                    <input asp-page-handler="BorrowBook" type="submit" class="btn btn-success" value="Borrow">
+                </form>
+            }
+            else
+            {
+                <p class="text-warning"><strong class="text-dark">Status:</strong> @Model.BookDetails.Status</p>
+                <form method="post">
+                    <input asp-page-handler="ReturnBook" type="submit" class="btn btn-success" value="Return">
+                </form>
+            }
+            <br />
+            <a class="btn btn-primary" asp-page="Status" asp-route-bookId="@Model.RouteData.Values["id"]">Show History</a>
+        </div>
+    </div>
+</div>

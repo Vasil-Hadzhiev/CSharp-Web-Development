@@ -1,0 +1,36 @@
+﻿@model MovieDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <img src="@Model.CoverImg" alt="Cover image for @Model.Title" />
+        </div>
+        <div class="col-md-7">
+            <h2>@Model.Title</h2>
+            <h5>by @Model.Director</h5>
+            <p>@Model.Description</p>
+            @if (Model.Status == "At home")
+            {
+                <p class="text-success"><strong class="text-dark">Status:</strong> @Model.Status</p>
+                <a asp-controller="Movies" asp-action="Borrow" asp-route-Id="@Model.Id" class="btn btn-success">Borrow</a>
+            }
+            else
+            {
+                <p class="text-warning"><strong class="text-dark">Status:</strong> @Model.Status</p>
+                <form method="post">
+                    @*<a asp-controller="Movies" asp-action="Return" asp-route-Id="@Model.Id" class="btn btn-success">Return</a>*@
+                    <input asp-controller="Movies" asp-action="Return" asp-route-Id="@Model.Id" type="submit" class="btn btn-success" value="Return">
+                </form>
+            }
+            <br />
+            <br />
+            <a class="btn btn-primary" asp-controller="Movies" asp-action="Status" asp-route-Id="@Model.Id">Show History</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+﻿namespace Library.Models
+{
+    public class MoviesRecords
+    {
+        public int RecordId { get; set; }
+        public Record Record { get; set; }
+
+        public int MovieId { get; set; }
+        public Movie Movie { get; set; }
+    }
+}

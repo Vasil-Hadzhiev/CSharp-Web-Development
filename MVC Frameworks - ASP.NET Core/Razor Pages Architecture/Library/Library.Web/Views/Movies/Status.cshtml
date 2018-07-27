@@ -1,0 +1,13 @@
+﻿@model MovieStatusViewModel
+@{
+    ViewData["Title"] = "Status";
+}
+
+<h2>Movie status for @Model.Title</h2>
+
+<ul>
+    @foreach (var date in Model.MovieRecords)
+    {
+        <li>@date.StartDate - @date.EndDate</li>
+    }
+</ul>

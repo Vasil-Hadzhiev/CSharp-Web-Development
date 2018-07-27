@@ -1,0 +1,46 @@
+﻿@page
+@model Library.Web.Pages.SearchModel
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h2>Search results: "@Model.SearchTerm"</h2>
+
+<ul>
+    @foreach (var author in Model.Authors)
+    {
+        <li>
+            <a asp-page="/Authors/Details" asp-route-id="@author.Id">
+                @author.Name
+            </a>
+            (author)
+        </li>
+    }
+    @foreach (var books in Model.Books)
+    {
+        <li>
+            <a asp-page="/Books/Details" asp-route-id="@books.Id">
+                @books.Title
+            </a>
+            (book)
+        </li>
+    }
+    @foreach (var director in Model.Directors)
+    {
+        <li>
+            <a asp-controller="Directors" asp-action="Details" asp-route-id="@director.Id">
+                @director.Name
+            </a>
+            (director)
+        </li>
+    }
+    @foreach (var movie in Model.Movies)
+    {
+        <li>
+            <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id">
+                @movie.Title
+            </a>
+            (movie)
+        </li>
+    }
+</ul>
