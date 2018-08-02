@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Library.Data;
+using Library.Web.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,6 +36,12 @@ namespace Library.Web
 
             services.AddDbContext<LibraryContext>();
 
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<LogExecution>();
+            }); 
+
+            services.AddScoped<Stopwatch>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

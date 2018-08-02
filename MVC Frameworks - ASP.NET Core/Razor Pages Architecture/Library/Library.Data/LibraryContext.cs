@@ -6,6 +6,8 @@
 
     public class LibraryContext : DbContext
     {
+        public DbSet<User> Users { get; set; }
+
         public DbSet<Book> Books { get; set; }
 
         public DbSet<Author> Authors { get; set; }
@@ -39,6 +41,11 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder
+                .Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+
             builder
                 .Entity<Book>()
                 .HasMany(book => book.Borrowers)
